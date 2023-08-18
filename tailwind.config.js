@@ -8,6 +8,7 @@ export default {
     extend: {
       colors: {
         blue: '#023AFF',
+        'blue-50': 'rgba(3, 0, 146, 0.06)',
         'blue-100': '#03009206',
         'blue-200': '#023AFF08',
         'blue-300': '#023AFF15',
