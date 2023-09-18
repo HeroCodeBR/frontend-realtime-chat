@@ -1,6 +1,10 @@
-import { ForwardRefRenderFunction, forwardRef } from 'react';
+import {
+  ForwardRefRenderFunction,
+  InputHTMLAttributes,
+  forwardRef,
+} from 'react';
 
-interface IInputProps {
+interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder: string;
 }
 
@@ -11,7 +15,6 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
   return (
     <div className=" mb-4 ">
       <input
-        type="text"
         ref={ref}
         {...rest}
         placeholder={placeholder}

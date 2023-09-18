@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IUsers } from '../../interfaces/UsersInterface';
+import { IUsers } from '../../interfaces/users.interface';
 import { api } from '../../server/api';
 
 export function Navbar() {
