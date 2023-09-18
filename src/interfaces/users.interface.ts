@@ -15,3 +15,14 @@ export interface ILoginResponse {
   token: string;
   user: IUsers;
 }
+
+export interface IRegisterUser {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface IResponseError<T = any> {
+  message?: string;
+  data?: T;
+}
