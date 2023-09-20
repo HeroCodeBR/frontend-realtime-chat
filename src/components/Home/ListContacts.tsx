@@ -1,6 +1,30 @@
-export function ListContacts() {
+import {
+  IMessageDataProps,
+  IRoomProps,
+  IToUserMessageProps,
+} from '../../interfaces/rooms.interface';
+
+interface IDataContactsProps {
+  isUserOnline: boolean;
+  user: IToUserMessageProps;
+  room: IRoomProps;
+  lastMessage: IMessageDataProps;
+  count: number;
+}
+
+export function ListContacts({
+  isUserOnline,
+  room,
+  user,
+  lastMessage,
+  count,
+}: IDataContactsProps) {
+  const date = new Date(lastMessage?.createdAt).toLocaleTimeString('us', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
   return (
-    <div className="flex p-4 justify-between shadow-sm items-center rounded-lg">
+    <div className="flex p-4 justify-between shadow-sm items-center rounded-lg cursor-pointer hover:bg-gray-50">
       <div className="flex items-center">
         <div className="relative">
           <img
@@ -8,18 +32,26 @@ export function ListContacts() {
             alt=""
             className="rounded-full w-[60px] h-[60px] "
           />
-          <div className="bg-green right-0 bottom-0 absolute w-[14px] h-[14px] rounded-full"></div>
+          {isUserOnline && (
+            <div className="bg-green right-0 bottom-0 absolute w-[14px] h-[14px] rounded-full"></div>
+          )}
         </div>
         <div className="ml-4">
-          <p className="text-normal text-black font-semibold">Name</p>
-          <p className="text-sm text-gray-200 ">message</p>
+          <p className="text-normal text-black font-semibold">{user.name}</p>
+          <p className="text-sm text-gray-200 ">{lastMessage?.body}</p>
         </div>
       </div>
       <div className="flex flex-col items-center text-center">
-        <span className="text-sm text-gray-200">10:58 AM</span>
-        <div className="w-[20px] h-[20px]  rounded-full bg-blue flex items-center">
-          <span className="text-white text-center w-full text-[10px]">1</span>
-        </div>
+        <span className="text-sm text-gray-200">
+          {lastMessage?.createdAt && date}
+        </span>
+        {count > 0 && (
+          <div className="w-[20px] h-[20px]  rounded-full bg-blue flex items-center">
+            <span className="text-white text-center w-full text-[10px]">
+              {count}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ export const MessageContext = createContext({} as MessageContextData);
 
 export function MessageProvider({ children }: IMessageProviderProps) {
   const [destinatary, setDestinatary] = useState<IUsers | null>(null);
+
   return (
     <MessageContext.Provider value={{ setDestinatary, destinatary }}>
       {children}

@@ -10,7 +10,6 @@ export function Header() {
     }
     return 'https://media.istockphoto.com/id/1485546774/pt/foto/bald-man-smiling-at-camera-standing-with-arms-crossed.jpg?s=2048x2048&w=is&k=20&c=rcqPv1QesDcDYNbE_66rv9B4P1f0KmJTxM3oMrnyBQI=';
   });
-  console.log('🚀 ~ file: Header.tsx:13 ~ Header ~ imageUrl:', imageUrl);
 
   return (
     <header className="flex items-center px-4 py-8 border-gray-100 bg-blue-200">
