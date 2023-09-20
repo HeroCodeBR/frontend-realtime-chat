@@ -1,10 +1,25 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
+import { useMutation } from 'react-query';
+import { toast } from 'react-toastify';
+import { useAuth } from '../../hooks/auth.hooks';
 import { IUsers } from '../../interfaces/users.interface';
 import { api } from '../../server/api';
+import { uploadImage } from '../../services/user.service';
 
 export function Navbar() {
   const [sugestions, setSugestions] = useState<IUsers[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+  const { user, singOut } = useAuth();
+  const [fileUpload, setFileUpload] = useState<string>(() => {
+    if (user?.avatar_url) {
+      const urlAvatar = 'http://localhost:3333/uploads/' + user.avatar_url;
+      return urlAvatar;
+    }
+    return 'https://www.inteligenciadevida.com.br/site23/wp-content/uploads/2022/12/d1f3e0055b9ae5f012cd4441d077b9e9.png';
+  });
+
   const handleSearch = async (value: string) => {
+    setInputValue(value);
     try {
       const token = localStorage.getItem('token');
       if (!token || token === '') {
@@ -15,28 +30,60 @@ export function Navbar() {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log(
+        '🚀 ~ file: Navbar.tsx:30 ~ handleSearch ~ response:',
+        response,
+      );
       setSugestions(response.data);
     } catch (error) {
       console.log('🚀 ~ file: Navbar.tsx:14 ~ handleSearch ~ error:', error);
     }
   };
+
+  const { mutate: mutateAvatar } = useMutation(uploadImage, {
+    onSuccess: (data) => {
+      toast.success('Avatar atualizado com sucesso!');
+    },
+  });
+  const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const image = files[0];
+    const imageUrl = URL.createObjectURL(image);
+    setFileUpload(imageUrl);
+    const formData = new FormData();
+    formData.append('image', image);
+    mutateAvatar(formData);
+  };
   return (
     <div className="flex items-center bg-blue-50 p-4 justify-between">
       <div className="flex items-center">
-        <img
-          src="https://media.istockphoto.com/id/1485546774/pt/foto/bald-man-smiling-at-camera-standing-with-arms-crossed.jpg?s=2048x2048&w=is&k=20&c=rcqPv1QesDcDYNbE_66rv9B4P1f0KmJTxM3oMrnyBQI="
-          alt=""
-          className="rounded-full w-[40px] h-[40px] "
-        />
-        <p className="text-sm ml-2">Alexia Kattah (você)</p>
+        {fileUpload && (
+          <div className="relative">
+            <input
+              type="file"
+              className="absolute opacity-0 cursor-pointer w-full h-full"
+              onChange={(e: ChangeEvent<HTMLInputElement>) => handleImage(e)}
+            />
+            <div
+              className="rounded-full w-[40px] h-[40px] cursor-pointer"
+              style={{
+                backgroundImage: `url(${fileUpload})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            ></div>
+          </div>
+        )}
+        <p className="text-sm ml-2">{user?.name} (você)</p>
       </div>
       <div className="relative flex flex-col">
         <input
           type="email"
           placeholder="digite o email..."
           className="bg-white rounded px-3 py-1"
-          value={''}
-          onChange={(e) => void handleSearch(e.target.value)}
+          value={inputValue}
+          onChange={(e) => handleSearch(e.target.value)}
         />
         {sugestions.length > 0 && (
           <ul className="rounded bg-white shadow absolute mt-8 w-full">
@@ -48,7 +95,9 @@ export function Navbar() {
           </ul>
         )}
       </div>
-      <p>Sair</p>
+      <p className="cursor-pointer" onClick={singOut}>
+        Sair
+      </p>
     </div>
   );
 }

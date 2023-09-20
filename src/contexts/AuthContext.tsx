@@ -7,6 +7,7 @@ interface IAuthContextProps {
   user: IUsers | null;
   isAuthenticated: boolean;
   setUser: Dispatch<SetStateAction<IUsers | null>>;
+  singOut: () => void;
 }
 
 export const AuthContext = createContext({} as IAuthContextProps);
@@ -19,9 +20,14 @@ export function AuthProvider({ children }: IAuthProviderProps) {
     }
     return null;
   });
+  function singOut() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    setUser(null);
+  }
   const isAuthenticated = !!user;
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, setUser }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, setUser, singOut }}>
       {children}
     </AuthContext.Provider>
   );

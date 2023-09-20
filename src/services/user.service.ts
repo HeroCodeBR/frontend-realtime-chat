@@ -26,4 +26,18 @@ const createUser = async ({
   return response.data;
 };
 
-export { createUser, login };
+const uploadImage = async (formData: FormData): Promise<void> => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('Token not found');
+
+  const response = await api.post<void>('/users/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export { createUser, login, uploadImage };
