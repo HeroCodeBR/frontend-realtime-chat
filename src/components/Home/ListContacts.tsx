@@ -1,3 +1,5 @@
+import { useMessage } from '../../hooks/message.hooks';
+import { useRoom } from '../../hooks/room.hooks';
 import {
   IMessageDataProps,
   IRoomProps,
@@ -19,12 +21,21 @@ export function ListContacts({
   lastMessage,
   count,
 }: IDataContactsProps) {
+  const { setDestinatary } = useMessage();
+  const { setRoom } = useRoom();
   const date = new Date(lastMessage?.createdAt).toLocaleTimeString('us', {
     hour: '2-digit',
     minute: '2-digit',
   });
+  const handleSetDestinatary = () => {
+    setDestinatary(user);
+    setRoom(room);
+  };
   return (
-    <div className="flex p-4 justify-between shadow-sm items-center rounded-lg cursor-pointer hover:bg-gray-50">
+    <div
+      className="flex p-4 justify-between shadow-sm items-center rounded-lg cursor-pointer hover:bg-gray-50"
+      onClick={() => handleSetDestinatary()}
+    >
       <div className="flex items-center">
         <div className="relative">
           <img

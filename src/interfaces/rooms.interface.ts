@@ -7,6 +7,8 @@ export interface IToUserMessageProps {
   email: string;
   name: string;
   _id: string;
+  createdAt: Date;
+  avatar_url: string;
 }
 
 export interface IDataRoomProps {
