@@ -2,6 +2,7 @@ import {
   ILogin,
   ILoginResponse,
   IRegisterUser,
+  IUsers,
 } from '../interfaces/users.interface';
 import { api } from '../server/api';
 
@@ -40,4 +41,18 @@ const uploadImage = async (formData: FormData): Promise<void> => {
   return response.data;
 };
 
-export { createUser, login, uploadImage };
+const searchSuggestions = async (email: string): Promise<IUsers[]> => {
+  const token = localStorage.getItem('token');
+  if (!token || token === '') {
+    throw new Error('Token not found');
+  }
+  const response = await api.get<IUsers[]>(`/users/filter/${email}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export { createUser, login, searchSuggestions, uploadImage };

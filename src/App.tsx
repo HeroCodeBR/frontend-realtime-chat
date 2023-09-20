@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './contexts/AuthContext';
+import { MessageProvider } from './contexts/MessageContext';
 import { RouteApp } from './routes';
 const queryClient = new QueryClient();
 
@@ -12,7 +13,9 @@ function App() {
       <ToastContainer />
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-          <RouteApp />
+          <MessageProvider>
+            <RouteApp />
+          </MessageProvider>
         </QueryClientProvider>
       </AuthProvider>
     </BrowserRouter>

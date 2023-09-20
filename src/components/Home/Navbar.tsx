@@ -2,14 +2,15 @@ import { ChangeEvent, useState } from 'react';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../hooks/auth.hooks';
+import { useMessage } from '../../hooks/message.hooks';
 import { IUsers } from '../../interfaces/users.interface';
-import { api } from '../../server/api';
-import { uploadImage } from '../../services/user.service';
+import { searchSuggestions, uploadImage } from '../../services/user.service';
 
 export function Navbar() {
   const [sugestions, setSugestions] = useState<IUsers[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const { user, singOut } = useAuth();
+  const { setDestinatary } = useMessage();
   const [fileUpload, setFileUpload] = useState<string>(() => {
     if (user?.avatar_url) {
       const urlAvatar = 'http://localhost:3333/uploads/' + user.avatar_url;
@@ -21,20 +22,9 @@ export function Navbar() {
   const handleSearch = async (value: string) => {
     setInputValue(value);
     try {
-      const token = localStorage.getItem('token');
-      if (!token || token === '') {
-        throw new Error('Token not found');
-      }
-      const response = await api.get<IUsers[]>(`/users/filter/${value}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(
-        '🚀 ~ file: Navbar.tsx:30 ~ handleSearch ~ response:',
-        response,
-      );
-      setSugestions(response.data);
+      const response = await searchSuggestions(value);
+
+      setSugestions(response);
     } catch (error) {
       console.log('🚀 ~ file: Navbar.tsx:14 ~ handleSearch ~ error:', error);
     }
@@ -54,6 +44,11 @@ export function Navbar() {
     const formData = new FormData();
     formData.append('image', image);
     mutateAvatar(formData);
+  };
+  const handleSelect = (suggestion: IUsers) => {
+    setSugestions([]);
+    setInputValue(suggestion.email);
+    setDestinatary(suggestion);
   };
   return (
     <div className="flex items-center bg-blue-50 p-4 justify-between">
@@ -88,7 +83,11 @@ export function Navbar() {
         {sugestions.length > 0 && (
           <ul className="rounded bg-white shadow absolute mt-8 w-full">
             {sugestions.map((sugestion, index) => (
-              <li className="p-2 cursor-pointer hover:bg-gray-100" key={index}>
+              <li
+                className="p-2 cursor-pointer hover:bg-gray-100"
+                key={index}
+                onClick={() => handleSelect(sugestion)}
+              >
                 {sugestion.email}
               </li>
             ))}

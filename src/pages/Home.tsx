@@ -4,38 +4,47 @@ import { ListContacts } from '../components/Home/ListContacts';
 import { MessageFromUser } from '../components/Home/MessageFromUser';
 import { MessageToUser } from '../components/Home/MessageToUser';
 import { Navbar } from '../components/Home/Navbar';
+import { SockerProvider } from '../contexts/SocketContext';
+import { useMessage } from '../hooks/message.hooks';
 export function Home() {
+  const { destinatary } = useMessage();
   return (
-    <div className="flex w-full">
-      <div className="w-1/2 overflow-y-scroll h-screen">
-        <Navbar />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-        <ListContacts />
-      </div>
-      <div className="w-1/2 bg-blue-50 h-screen flex flex-col">
-        <Header />
-        <div className=" flex flex-col h-full overflow-y-scroll">
-          <MessageToUser />
-          <MessageFromUser />
-          <MessageToUser />
-          <MessageFromUser />
-          <MessageToUser />
-          <MessageFromUser />
-          <MessageToUser />
-          <MessageFromUser />
+    <SockerProvider>
+      <div className="flex w-full">
+        <div className="w-1/2 overflow-y-scroll h-screen">
+          <Navbar />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
+          <ListContacts />
         </div>
-        <Footer />
+        <div className="w-1/2 bg-blue-50 h-screen flex flex-col">
+          {destinatary && (
+            <>
+              <Header />
+              <div className=" flex flex-col h-full overflow-y-scroll">
+                <MessageToUser />
+                <MessageFromUser />
+                <MessageToUser />
+                <MessageFromUser />
+                <MessageToUser />
+                <MessageFromUser />
+                <MessageToUser />
+                <MessageFromUser />
+              </div>
+              <Footer />
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </SockerProvider>
   );
 }
