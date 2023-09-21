@@ -2,10 +2,6 @@
 import check from '../../assets/check.png';
 import { IMessageData } from '../../interfaces/messages.interface';
 export const MessageFromUser = ({ message }: { message: IMessageData }) => {
-  console.log(
-    '🚀 ~ file: MessageFromUser.tsx:5 ~ MessageFromUser ~ message:',
-    message,
-  );
   return (
     <div className="bg-blue text-white rounded-lg w-1/2 ml-auto mt-4 p-3 mr-4">
       <p className="font-light">{message.body}</p>

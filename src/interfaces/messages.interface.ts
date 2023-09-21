@@ -7,3 +7,13 @@ export interface IMessageData {
   id: number;
   viewed_by_the_user: boolean;
 }
+
+export interface ICreateMessage {
+  room_id: string;
+  body_message: string;
+  email: string;
+}
+
+export interface IOutputMessage {
+  ok: boolean;
+}

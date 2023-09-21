@@ -1,15 +1,16 @@
 import { FormEvent, useRef } from 'react';
+import { useMutation } from 'react-query';
 import send from '../../assets/send.png';
 import { useAuth } from '../../hooks/auth.hooks';
 import { useMessage } from '../../hooks/message.hooks';
 import { useRoom } from '../../hooks/room.hooks';
 import { useSocket } from '../../hooks/socket.hooks';
+import { createMessageDatabase } from '../../services/messages.service';
 export const Footer = () => {
   const { socket } = useSocket();
   const { room } = useRoom();
   const { user } = useAuth();
   const { destinatary, setMessages, messages } = useMessage();
-  console.log('🚀 ~ file: Footer.tsx:12 ~ Footer ~ messages:', messages);
   const messageRef = useRef<HTMLInputElement | null>(null);
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     const message = messageRef.current?.value;
@@ -22,8 +23,34 @@ export const Footer = () => {
       socket?.emit('message', messageSendData);
       addMessagetoChat();
       messageRef.current!.value = '';
+      saveMessageOnDatabase(message);
     }
   };
+  const saveMessageOnDatabase = (message: string) => {
+    /**
+     *   const email_from_user = message.email;
+      const message_from_user = message.body_message;
+      const room_id = message.room_id;
+     */
+    const data = {
+      room_id: room!._id,
+      body_message: message,
+      email: destinatary!.email,
+    };
+    mutateCreateData(data);
+  };
+  const { mutate: mutateCreateData } = useMutation(
+    'saveMessageOnDatabase',
+    createMessageDatabase,
+    {
+      onSuccess: () => {
+        console.log('mensagem salva no banco de dados');
+      },
+      onError: (error) => {
+        console.log('🚀 ~ file: Footer.tsx:46 ~ Footer ~ error:', error);
+      },
+    },
+  );
 
   const addMessagetoChat = () => {
     const message = messageRef.current!.value;

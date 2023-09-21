@@ -2,10 +2,6 @@ import { IMessageData } from '../../interfaces/messages.interface';
 
 //mensagem PARA o usuario
 export const MessageToUser = ({ message }: { message: IMessageData }) => {
-  console.log(
-    '🚀 ~ file: MessageToUser.tsx:5 ~ MessageToUser ~ message:',
-    message,
-  );
   return (
     <div className="bg-white text-black rounded-lg w-1/2 mr-auto mt-4 p-3 ml-4">
       <p className="font-light">{message.body}</p>
