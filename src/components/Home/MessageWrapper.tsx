@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useAuth } from '../../hooks/auth.hooks';
 import { useMessage } from '../../hooks/message.hooks';
 import { useRoom } from '../../hooks/room.hooks';
 import { useSocket } from '../../hooks/socket.hooks';
 import { getHistoricMessages } from '../../services/messages.service';
+import {
+  createRoom,
+  getRoomByEmailDestinatary,
+} from '../../services/rooms.service';
 import { MessageFromUser } from './MessageFromUser';
 import { MessageToUser } from './MessageToUser';
 
 export function MessageWrapper() {
   const queryClient = useQueryClient();
   const { socket } = useSocket();
-  const { room } = useRoom();
+  const { room, setRoom } = useRoom();
   const { user } = useAuth();
   const { messages, setMessages, destinatary } = useMessage();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -22,6 +26,27 @@ export function MessageWrapper() {
 
     onSuccess: (data) => {
       setMessages(data);
+    },
+  });
+  useQuery({
+    queryKey: ['getRoomByEmailDestinatary', destinatary!.email],
+    queryFn: () => getRoomByEmailDestinatary(destinatary!.email),
+    onSuccess: (data) => {
+      console.log(data);
+      if (!data) {
+        createRoomMutation();
+      } else {
+        joinRoom();
+        listenRoomMessages();
+      }
+    },
+  });
+
+  const { mutate: createRoomMutation } = useMutation({
+    mutationKey: ['createRoom', destinatary!.email],
+    mutationFn: () => createRoom(destinatary!.email),
+    onSuccess: (data) => {
+      setRoom(data);
       joinRoom();
       listenRoomMessages();
     },
